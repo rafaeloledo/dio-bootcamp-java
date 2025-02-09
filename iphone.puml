@@ -1,0 +1,37 @@
+@startuml
+class iPhone {
+  -String model
+  -int batteryLevel
+  -boolean isOn
+  +void powerOn()
+  +void powerOff()
+  +void charge(int amount)
+  +void display(String content)
+}
+
+class Screen {
+  -String resolution
+  +void show(String content)
+}
+
+class Processor {
+  -String type
+  +void execute(String instruction)
+}
+
+class Battery {
+  -int capacity
+  +void charge(int amount)
+  +int getLevel()
+}
+
+class iOS {
+  -String version
+  +void runApp(String appName)
+}
+
+iPhone "1" -- "1" Screen : has
+iPhone "1" -- "1" Processor : uses
+iPhone "1" -- "1" Battery : has
+iPhone "1" -- "1" iOS : runs
+@enduml
