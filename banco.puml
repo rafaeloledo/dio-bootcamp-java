@@ -1,0 +1,87 @@
+@startuml
+
+class User {
+    -String username
+    -String password
+    -List<Account> accounts
+
+    +User(String username, String password)
+    +addAccount(Account account)
+    +removeAccount(Account account)
+    +getAccounts(): List<Account>
+}
+
+class Account {
+    -String accountId
+    -double balance
+    -List<Transaction> transactionHistory
+
+    +Account(String accountId)
+    +deposit(double amount)
+    +withdraw(double amount)
+    +getBalance(): double
+    +getTransactionHistory(): List<Transaction>
+}
+
+class Transaction {
+    -String transactionId
+    -double amount
+    -String date
+    -String type
+    -Account account
+
+    +Transaction(double amount, String type, Account account)
+    +getDetails(): String
+}
+
+class Transfer {
+    -User sender
+    -User receiver
+    -double amount
+    -String transferDate
+
+    +Transfer(User sender, User receiver, double amount)
+    +transferFunds(): boolean
+}
+
+class AuthService {
+    -List<User> users
+
+    +AuthService()
+    +registerUser(User user): boolean
+    +login(User user): boolean
+}
+
+class UI {
+    -UserService userService
+    -AccountService accountService
+    -TransferService transferService
+    -DepositService depositService
+    -WithdrawService withdrawService
+    -TransactionHistory transactionHistory
+
+    +login()
+    +register()
+    +checkBalance()
+    +transferMoney()
+    +deposit()
+    +withdraw()
+    +viewTransactions()
+}
+
+UI --> UserService
+UI --> AccountService
+UI --> TransferService
+UI --> DepositService
+UI --> WithdrawService
+UI --> TransactionHistory
+
+TransferService --> Account
+TransferService --> Transaction
+
+AuthService --> User
+
+User --> Account
+Account --> Transaction
+
+@enduml

@@ -10,8 +10,10 @@ create_java_project:
 		-DarchetypeVersion=1.4 \
 		-DinteractiveMode=false \
 
-exec:
-	mvn exec:java -Dexec.mainClass=com.bancodigital.App
+mvnd:
+	@mvnd package -DskipTests -T 12 -Dmaven.test.skip=true\
+		&& mvnd exec:java -Dexec.mainClass=com.bancodigital.App
 
-defprop:
-	mvn versions:set-property -Dfoo="bar"
+mvn:
+	@mvn package -DskipTests -T 12 -Dmaven.test.skip=true\
+		&& mvn exec:java -Dexec.mainClass=com.bancodigital.App
