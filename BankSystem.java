@@ -1,56 +1,91 @@
 import java.util.Scanner;
 
+abstract class Conta {
+  protected double saldo;
+
+  public Conta(double saldo) {
+    this.saldo = saldo;
+  }
+
+  public abstract void sacar(double valor);
+
+  public void exibirSaldo() {
+    System.out.printf("Saldo Atual: %.2f%n", saldo);
+  }
+}
+
+class ContaCorrente extends Conta {
+  private double limite;
+
+  public ContaCorrente(double saldo, double limite) {
+    super(saldo);
+    this.limite = limite;
+  }
+
+  @Override
+  public void sacar(double valor) {
+    if ((saldo - valor) >= -limite) {
+      System.out.printf("Saque realizado: %.2f\n", valor);
+      saldo -= valor;
+    } else {
+      System.out.printf("Saque invalido: Excede limite\n");
+    }
+
+    exibirSaldo();
+  }
+}
+
+class ContaPoupanca extends Conta {
+
+  public ContaPoupanca(double saldo) {
+    super(saldo);
+  }
+
+  @Override
+  public void sacar(double valor) {
+    if (saldo >= valor) {
+      saldo -= valor;
+    } else {
+      System.out.printf("Saque invalido: Saldo insuficiente\n");
+    }
+
+    exibirSaldo(); // Exibe o saldo atualizado
+  }
+}
+
 public class BankSystem {
-	private String titular = "";
-	private int numeroConta = 0;
-	private double saldo = 0.0;
+  public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
 
-	public BankSystem(String titular, int numeroConta, double saldo) {
-		this.titular = titular;
-		this.numeroConta = numeroConta;
-		this.saldo = saldo;
-	}
+    // System.out.print("Tipo de conta: ");
+    String tipoConta = scanner.nextLine();
+    // System.out.print("Nome: ");
+    String nome = scanner.nextLine();
+    // System.out.print("Numero da conta: ");
+    String numeroConta = scanner.nextLine();
+    // System.out.print("Saldo inicial: ");
+    double saldoInicial = scanner.nextDouble();
 
-	public boolean sacar(double valorSaque) {
-		if (valorSaque <= saldo) {
-			saldo -= valorSaque;
-			return true;
-		}
+    Conta conta = null;
 
-		return false;
-	}
+    if (tipoConta.equalsIgnoreCase("corrente")) {
+      // System.out.print("Digite o valor do limite para cheque especial: ");
+      double limite = scanner.nextDouble();
+      conta = new ContaCorrente(saldoInicial, limite);
+    }
 
-	public void depositar(double deposito) {
-		saldo += deposito;
-	}
+    if (tipoConta.equalsIgnoreCase("poupança") || tipoConta.equalsIgnoreCase("poupanca")) {
+      conta = new ContaPoupanca(saldoInicial);
+    }
 
-	public double consultarSaldo(){
-		return saldo;
-	}
+    // System.out.print("Digite o valor do saque: ");
+    while (scanner.hasNextDouble()) {
+      double valorSaque = scanner.nextDouble();
+      // System.out.printf("Sacando %f da conta que possui %f de saldo\n", valorSaque,
+      // conta.saldo);
+      conta.sacar(valorSaque);
+    }
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		String titular = sc.nextLine();
-		int numeroConta = sc.nextInt();
-		double saldoInicial = sc.nextDouble();
-		BankSystem conta = new BankSystem(titular, numeroConta, saldoInicial);
-
-		if (sc.hasNextDouble()) {
-			double valorSaque = sc.nextDouble();
-			if (!conta.sacar(valorSaque)) {
-				System.out.println("Saque invalido: Saldo insuficiente");
-				System.out.println("Saldo Atual: " + String.format("%.2f", conta.consultarSaldo()));
-				return;
-			}
-		}
-
-		if (sc.hasNextDouble()) {
-			double valorDeposito = sc.nextDouble();
-			conta.depositar(valorDeposito);
-		}
-
-		System.out.println("Saldo Atualizado: " + String.format("%.2f", conta.consultarSaldo()));
-
-		sc.close();
-	}
+    scanner.close();
+  }
 }
